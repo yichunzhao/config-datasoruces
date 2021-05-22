@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 class Config { … }
 ````
+The annotation @EnableJpaRepositoriesenables JPA repositories. Will scan the package of the annotated configuration class for Spring Data repositories by default.
 
 The JPA namespace is used in this example. If you use the repository abstraction for any other store, you need to change this to the appropriate namespace declaration of your store module. In other words, you should exchange jpa in favor of, for example, mongodb.
 
