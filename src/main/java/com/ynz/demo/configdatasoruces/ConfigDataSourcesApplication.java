@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ConfigDataSourcesApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ConfigDataSourcesApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ConfigDataSourcesApplication.class, args);
+    }
 
 }

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(schema = "users")
+@Table(schema = "public")
 @Getter
 @Setter
 @NoArgsConstructor

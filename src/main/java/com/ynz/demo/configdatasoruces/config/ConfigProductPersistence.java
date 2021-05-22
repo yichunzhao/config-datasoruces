@@ -12,14 +12,20 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
 @EnableConfigurationProperties
-@EnableJpaRepositories
-public class ConfigProductDB {
+@EnableJpaRepositories(
+        basePackages = {"com.ynz.demo.configdatasoruces.model.product", "com.ynz.demo.configdatasoruces.dao.product"},
+        entityManagerFactoryRef = "productEntityManager",
+        transactionManagerRef = "productTransactionManager"
+)
+@EnableTransactionManagement
+public class ConfigProductPersistence {
 
     @Bean("productDataSourceProperties")
     @ConfigurationProperties(prefix = "spring.datasource")
@@ -28,31 +34,28 @@ public class ConfigProductDB {
         return new DataSourceProperties();
     }
 
-    @Bean("userDataSourceProperties")
-    @ConfigurationProperties(prefix = "spring.another-datasource")
-    public DataSourceProperties anotherDataSourceProperties() {
-        return new DataSourceProperties();
-    }
-
     @Bean("productDataSource")
+    @Primary
     public DataSource productDataSource(@Qualifier("productDataSourceProperties") DataSourceProperties dataSourceProperties) {
         return dataSourceProperties.initializeDataSourceBuilder().build();
     }
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(@Qualifier("productDataSource") DataSource dataSource) {
+    @Bean("productEntityManager")
+    @Primary
+    public LocalContainerEntityManagerFactoryBean productEntityManager(@Qualifier("productDataSource") DataSource dataSource) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
 
-        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.ynz.demo.configdatasoruces.model.product");
-        factory.setDataSource(dataSource);
-        return factory;
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setJpaVendorAdapter(vendorAdapter);
+        em.setPackagesToScan("com.ynz.demo.configdatasoruces.model.product");
+        em.setDataSource(dataSource);
+        return em;
     }
 
-    @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    @Bean("productTransactionManager")
+    @Primary
+    public PlatformTransactionManager productTransactionManager(@Qualifier("productEntityManager") EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager manager = new JpaTransactionManager();
         manager.setEntityManagerFactory(entityManagerFactory);
         return manager;
