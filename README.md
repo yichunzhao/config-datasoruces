@@ -14,9 +14,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 class Config { … }
 ````
-The annotation @EnableJpaRepositoriesenables JPA repositories. Will scan the package of the annotated configuration class for Spring Data repositories by default.
 
-The JPA namespace is used in this example. If you use the repository abstraction for any other store, you need to change this to the appropriate namespace declaration of your store module. In other words, you should exchange jpa in favor of, for example, mongodb.
+The annotation @EnableJpaRepositoriesenables JPA repositories. Will scan the package of the annotated configuration class for Spring Data repositories by default. The reposotory interfaces combined with the dataSource are used to create JPA Entity manager Factory and Tranaction manager.
+````
+@EnableJpaRepositories(
+        basePackages = {"com.ynz.demo.configdatasoruces.model.user", "com.ynz.demo.configdatasoruces.dao.user"},
+        entityManagerFactoryRef = "userEntityManager",
+        transactionManagerRef = "userTransactionManager"
+)
+````
+
+The JPA namespace is used in this example. If you use the repository abstraction for any other store, you need to change this to the appropriate namespace declaration of your store module. In other words, you should exchange jpa in favor of, for example, mongodb, like @EnableMongoRepositories. 
 
 Also, note that the JavaConfig variant does not configure a package explicitly, because the package of the annotated class is used by default. To customize the package to scan, use one of the basePackage… attributes of the data-store-specific repository’s @Enable${store}Repositories-annotation.
 
@@ -28,5 +36,5 @@ The following example shows annotation-driven configuration of base packages:
 class Configuration { … }
 ````
 
-
+Annotation @PropertySource("classpath:UserPersistence.properties") providing a convenient and declarative mechanism for adding a PropertySource to Spring's Environment. To be used in conjunction with @Configuration classes.
 
